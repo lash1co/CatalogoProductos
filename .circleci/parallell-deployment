@@ -2,39 +2,39 @@ version: 2
 jobs:
   build-frontend:
     docker:
-      - image: circleci/node:14.17.0
+      - image: circleci/node:14.15.4
     working_directory: ~/ucp
     steps:
       - run: echo build-frontend step
   build-backend:
     docker:
-      - image: circleci/node:14.17.0
+      - image: circleci/node:14.15.4
     working_directory: ~/ucp
     steps:
       - run: echo build-backend step
 
   test-frontend:
     docker:
-      - image: circleci/node:14.17.0
+      - image: circleci/node:14.15.4
     working_directory: ~/ucp
     steps:
       - run: echo test-frontend step
   test-backend:
     docker:
-      - image: circleci/node:14.17.0
+      - image: circleci/node:14.15.4
     working_directory: ~/ucp
     steps:
       - run: echo test-backend step
   integration-tests:
     docker:
-      - image: circleci/node:14.17.0
+      - image: circleci/node:14.15.4
     working_directory: ~/ucp
     steps:
       - run: echo integration-tests step
 
   deploy:
     docker:
-      - image: circleci/node:14.17.0
+      - image: circleci/node:14.15.4
     working_directory: ~/ucp
     steps:
       - run: echo deploy step
