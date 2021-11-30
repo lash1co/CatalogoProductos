@@ -1,0 +1,82 @@
+<section class="discovery" type="discovery">
+    <div class="container">
+        <div class="section-header">
+            <h2>Regístrate ingresando los siguientes datos</h2>
+        </div><br>
+        <form [formGroup]="registerForm" (submit)="registrarUsuario()" autocomplete="off">
+            <div class="ui-card  register-card">
+                <div class="container">
+                    <label for="inp" class="inp">
+                        <select id="selectbox" data-selected="" formControlName="tipoDocumento">
+                            <option value="" selected="selected" disabled="disabled">Seleccione el tipo de documento</option>
+                            <option value="1">Cédula de ciudadanía</option>
+                            <option value="2">Nit</option>
+                            <option value="3">Pasaporte</option>
+                            <option value="4">Cityscape</option>
+                            <option value="5">Workshop</option>
+                        </select>
+                        <span class="focus-bg"></span>
+                    </label>
+                    <label for="inp" class="inp">
+                        <input type="text" id="inp" placeholder="&nbsp;" formControlName="documento">
+                        <span class="label">Documento</span>
+                        <span class="focus-bg"></span>
+                    </label>
+                </div>
+                <div class="space"></div>
+                <div class="container">
+                    <label for="inp" class="inp">
+                        <input type="text" id="inp" placeholder="&nbsp;" formControlName="primerNombre">
+                        <span class="label">Primer Nombre</span>
+                        <span class="focus-bg"></span>
+                    </label>
+                    <label for="inp" class="inp">
+                        <input type="text" id="inp" placeholder="&nbsp;" formControlName="segundoNombre">
+                        <span class="label">Segundo Nombre</span>
+                        <span class="focus-bg"></span>
+                    </label>
+                </div>
+                <div class="space"></div>
+                <div class="container">
+                    <label for="inp" class="inp">
+                        <input type="text" id="inp" placeholder="&nbsp;" formControlName="primerApellido">
+                        <span class="label">Primer Apellido</span>
+                        <span class="focus-bg"></span>
+                    </label>
+                    <label for="inp" class="inp">
+                        <input type="text" id="inp" placeholder="&nbsp;" formControlName="segundoApellido">
+                        <span class="label">Segundo Apellido</span>
+                        <span class="focus-bg"></span>
+                    </label>
+                </div>
+                <div class="space"></div>
+                <div class="container">
+                    <label for="inp" class="inp">
+                        <input type="text" id="inp" placeholder="&nbsp;" formControlName="email">
+                        <span class="label">Email</span>
+                        <span class="focus-bg"></span>
+                    </label>
+                    <label for="inp" class="inp">
+                        <input type="text" id="inp" placeholder="&nbsp;" formControlName="telefono">
+                        <span class="label">Teléfono</span>
+                        <span class="focus-bg"></span>
+                    </label>
+                </div>
+                <div class="container">
+                    <label for="inp" class="inp">
+                        <input type="password" id="inp" placeholder="&nbsp;" formControlName="contrasenia">
+                        <span class="label">Contraseña</span>
+                        <span class="focus-bg"></span>
+                    </label>
+                </div>
+                <div class="space"></div>
+                <div class="container">
+                    <label for="tyc_checkbox" class="tyc-container__terms">Acepto los <a target="_blank" routerLink="/registrar" aria-label="Términos y condiciones (abrirá una nueva ventana)">Términos y Condiciones</a> y autorizo el uso de mis datos de acuerdo a la <a target="_blank" routerLink="/registrar" aria-label="Declaración de Privacidad (abrirá una nueva ventana)">Declaración de Privacidad</a> y la <a target="_blank" routerLink="/registrar" aria-label="Autorización de Tratamiento de Datos (abrirá una nueva ventana)">Autorización de Tratamiento de Datos</a>.</label>
+                </div>
+            </div>
+
+            <input type="submit" value="REGISTRARSE" class="button yellow">
+        </form>
+    </div>
+</section>
+
