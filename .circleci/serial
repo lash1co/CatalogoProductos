@@ -1,0 +1,40 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:14.17.0
+
+    working_directory: ~/ucp
+
+    steps:
+      - run: echo build step
+
+  test:
+    docker:
+      - image: circleci/node:14.17.0
+
+    working_directory: ~/ucp
+
+    steps:
+      - run: echo test step
+
+  deploy:
+    docker:
+      - image: circleci/node:14.17.0
+
+    working_directory: ~/ucp
+
+    steps:
+      - run: echo deploy step
+
+workflows:
+  version: 2
+  build-and-test:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+      - deploy:
+          requires:
+            - test
