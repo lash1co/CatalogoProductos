@@ -35,10 +35,10 @@ jobs: # a collection of steps
       - setup_remote_docker:
           version: 19.03.13
 
-      - run:
-          name: Build test container
-          command: |
-            docker build -t "ucp:${CIRCLE_BUILD_NUM}" .
+      #- run:
+      #    name: Build test container
+      #    command: |
+      #      docker build -t "ucp:${CIRCLE_BUILD_NUM}" .
 
 workflows:
   version: 2
