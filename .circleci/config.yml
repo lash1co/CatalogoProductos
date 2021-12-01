@@ -39,24 +39,15 @@ jobs: # a collection of steps
           name: Build test container
           command: |
             docker build -t "ucp:${CIRCLE_BUILD_NUM}" .
+      - deploy_project:
+         executor: aws-cli/default
+         steps:
+      - attach_workspace:
+          at: .
+      - aws-cli/setup:
+          profile-name: default
       - run:
-            name: Installing AWS CLI
-            working_directory: /
-            command: |
-              sudo apt-get -y -qq update
-              sudo apt-get install -y awscli
-              sudo apt-get install -y python-pip python-dev build-essential
-              sudo pip install awsebcli --upgrade
-      - run:
-            name: Preparing Artifact
-            command: |
-              npm install
-              npm run build # Here goes your build command.
-              cd dist       # My angular app generate a Dist folder
-              zip ../build.zip -r * .[^.]* # Just zip your files
-              echo "Sucessfull building"
-      - run:
-          name: deploy
+          name: Upload file to S3
           command: |
             name:aws s3 sync ./app/build s3://catalago-aws-app
 
