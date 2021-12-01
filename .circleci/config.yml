@@ -39,13 +39,12 @@ jobs: # a collection of steps
           name: Build test container
           command: |
             docker build -t "ucp:${CIRCLE_BUILD_NUM}" .
-    deploy:
-    
-      - attach_workspace:
-          at: .
-      - checkout
-      - run: aws s3 sync ./app/build s3://ci-cd-example
+      - run:
+          name: deploy
+          command: |
+            name:aws s3 sync ./app/build s3://ci-cd-example
 
+          
 workflows:
   version: 2
   commit:
@@ -61,9 +60,4 @@ workflows:
                 - master
     jobs:
       - build
-      - test:
-          requires:
-            - build
-      - deploy:
-          requires:
-            - test
+
