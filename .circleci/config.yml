@@ -39,6 +39,9 @@ jobs: # a collection of steps
           name: Build test container
           command: |
             docker build -t "ucp:${CIRCLE_BUILD_NUM}" .
+      - run: # Install the AWS CLI if it is not already included in the docker image
+           name: Install awscli
+           command: sudo pip install awscli
       - run:
           name: deploy
           command: |
