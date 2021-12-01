@@ -39,16 +39,19 @@ jobs: # a collection of steps
           name: Build test container
           command: |
             docker build -t "ucp:${CIRCLE_BUILD_NUM}" .
+  deploy:
+    working_directory: ~/repo
+    docker:
+      - image: innovatorjapan/awscli:latest
+    steps:
+      - attach_workspace:
+          at: .
       - run:
-          name: Deploying Vasko.
-          command: echo Deploying Vasko.
-      - run:
-          name: Installing dependencies.
-          command: sudo pip install awscli
-      - deploy:
-          name: Deploy to S3 if branch is Master.
+          name: Deploy
           command: |
-            name:aws s3 sync ./app/build s3://catalago-aws-app
+            if [ $CIRCLE_BRANCH = 'master' ]; then
+              aws s3 sync dist/ListaCheck/ s3://catalago-aws-app-bucket/ --delete --exact-timestamps;
+            fi
 
           
 workflows:
