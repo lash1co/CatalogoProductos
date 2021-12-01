@@ -39,9 +39,22 @@ jobs: # a collection of steps
           name: Build test container
           command: |
             docker build -t "ucp:${CIRCLE_BUILD_NUM}" .
-      - run: # Install the AWS CLI if it is not already included in the docker image
-           name: Install awscli
-           command: sudo pip install awscli
+      - run:
+            name: Installing AWS CLI
+            working_directory: /
+            command: |
+              sudo apt-get -y -qq update
+              sudo apt-get install -y awscli
+              sudo apt-get install -y python-pip python-dev build-essential
+              sudo pip install awsebcli --upgrade
+      - run:
+            name: Preparing Artifact
+            command: |
+              npm install
+              npm run build # Here goes your build command.
+              cd dist       # My angular app generate a Dist folder
+              zip ../build.zip -r * .[^.]* # Just zip your files
+              echo "Sucessfull building"
       - run:
           name: deploy
           command: |
