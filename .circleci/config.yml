@@ -1,27 +1,56 @@
 version: 2.1
-orbs:
-  aws-s3: circleci/aws-s3@3.0
+
 jobs:
   build:
-    docker:
-      - image: 'cimg/python:3.6'
+    machine:
+      image: ubuntu-2004:202010-01
     steps:
       - checkout
-      - run: mkdir bucket && echo "lorem ipsum" > bucket/build_asset.txt
-      - aws-s3/sync:
-          arguments: |
-            --acl public-read \
-            --cache-control "max-age=86400"
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-region: AWS_REGION_BLUE
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          from: bucket
-          to: 's3://catalago-aws-app/prefix'
-      - aws-s3/copy:
-          arguments: '--dryrun'
-          from: bucket/build_asset.txt
-          to: 's3://catalago-aws-app'
+      - run: npm install
+      - run:
+          name: build
+          command: |
+            if [ $CIRCLE_BRANCH = 'main' ]; then
+              npm run build --prod
+            fi
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+  test:
+    machine:
+      image: ubuntu-2004:202010-01
+    steps:
+      - attach_workspace:
+          at: .
+      - checkout
+      #- run: cd ./app && npm run test
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+  deploy:
+    machine:
+        image: ubuntu-2004:202010-01
+    steps:
+      - attach_workspace:
+          at: .
+      - checkout
+      - run: aws s3 sync ./dist/ListaCheck s3://tienda-virtual-catalogo
+
+
 workflows:
-  s3-example:
+  build_and_deploy:
     jobs:
-      - build
+      - build:
+          filters:
+            branches:
+              only:
+                - main
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - main
