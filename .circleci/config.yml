@@ -2,10 +2,21 @@ version: 2.0 # use CircleCI 2.1
 jobs: # a collection of steps
   build: # runs not using Workflows must have a `build` job as entry point
     working_directory: ~/ucp # directory where steps will run
+    environment:
+      HUGO_BUILD_DIR: ~/hugo/public
     docker: # run the steps with Docker
       - image: circleci/node:14.15.4 # ...with this image as the primary container; this is where all `steps` will run
     steps: # a collection of executable commands
       - checkout # special step to check out source code to working directory
+       # install git
+      - run: apk update && apk add git
+
+      # checkout the repository
+      - checkout
+
+      # install git submodules for managing third-party dependencies
+      - run: git submodule sync && git submodule update --init
+
       - run:
           name: update-npm
           command: 'sudo npm install -g npm@latest'
@@ -39,6 +50,31 @@ jobs: # a collection of steps
           name: Build test container
           command: |
             docker build -t "ucp:${CIRCLE_BUILD_NUM}" .
+      - run:
+          name: install AWS CLI (first install pip, the Python package manager)
+          command: |
+            apk add --update python python-dev py-pip build-base
+            pip install awscli
+            # build with Hugo
+      - run: HUGO_ENV=production hugo -v -d $HUGO_BUILD_DIR
+ 
+      - run:
+          name: test our generated HTML files
+          command: |
+            htmlproofer $HUGO_BUILD_DIR --allow-hash-href --check-html \
+            --empty-alt-ignore --disable-external
+
+      # `deploy` step: identical to a `run` step, but uses only one container:
+      # https://circleci.com/docs/2.0/configuration-reference/#deploy 
+      - deploy:
+          name: deploy to AWS
+          command: |
+            if [ "${CIRCLE_BRANCH}" = "master" ]; then
+              aws s3 sync $HUGO_BUILD_DIR \
+              s3://your-bucket-name/your-subfolder --delete
+            else
+              echo "Not master branch, dry run only"
+            fi
   deploy:
     working_directory: ~/repo
     docker:
