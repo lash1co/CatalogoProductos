@@ -1,61 +1,24 @@
 version: 2.1
+orbs:
+  aws-s3: circleci/aws-s3@3.0
 jobs:
   build:
-    working_directory: ~/repo
     docker:
-      - image: circleci/node:12-browsers
+      - image: 'cimg/python:3.6'
     steps:
       - checkout
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "package-lock.json" }}
-          - v1-dependencies-
-      - run:
-          name: Install dependencies
-          command: npm install
-      - save_cache:
-          key: v1-dependencies-{{ checksum "package-lock.json" }}
-          paths:
-            - node_modules
-      - run:
-          name: Test
-          command:  npm run test-prod
-      - run:
-          name: Build
-          command: |
-            if [ $CIRCLE_BRANCH = 'master' ]; then
-              npm run build-prod
-            fi
-      - persist_to_workspace:
-          root: .
-          paths:
-            - .
-  deploy:
-    working_directory: ~/repo
-    docker:
-      - image: innovatorjapan/awscli:latest
-    steps:
-      - attach_workspace:
-          at: .
-      - run:
-          name: Deploy
-          command: |
-            if [ $CIRCLE_BRANCH = 'master' ]; then
-              aws s3 sync dist/angular-material-starter/ s3://angular-material-starter-bucket/ --delete --exact-timestamps;
-            fi
+      - run: mkdir bucket && echo "lorem ipsum" > bucket/build_asset.txt
+      - aws-s3/sync:
+          arguments: |
+            --acl public-read \
+            --cache-control "max-age=86400"
+          from: bucket
+          to: 's3://my-s3-bucket-name/prefix'
+      - aws-s3/copy:
+          arguments: '--dryrun'
+          from: bucket/build_asset.txt
+          to: 's3://catalago-aws-app'
 workflows:
-  version: 2.1
-  build_and_deploy:
+  s3-example:
     jobs:
-      - build:
-          filters:
-            branches:
-              only:
-                - master
-      - deploy:
-          requires:
-            - build
-          filters:
-            branches:
-              only:
-                - master
+      - build
