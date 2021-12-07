@@ -15,15 +15,9 @@ jobs:
             fi
       - persist_to_workspace:
           root: .
-
           paths:
             - .
   test:
-
-          paths: 
-            - .
-  test: 
-
     machine:
       image: ubuntu-2004:202010-01
     steps:
@@ -42,10 +36,7 @@ jobs:
       - attach_workspace:
           at: .
       - checkout
-
       - run: aws s3 sync ./dist/ListaCheck s3://tienda-virtual-catalogo
-
-      - run: aws s3 sync ./dist/ListaCheck s3://catalago-aws-app
 
 
 workflows:
@@ -62,8 +53,4 @@ workflows:
           filters:
             branches:
               only:
-
                 - main
-
-                - main
-
