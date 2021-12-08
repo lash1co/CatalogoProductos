@@ -36,7 +36,7 @@ jobs:
       - attach_workspace:
           at: .
       - checkout
-      - run: aws s3 sync ./dist/ListaCheck s3://catalago-aws-app
+      - run: aws s3 sync ./dist/ListaCheck s3://catalago-aws-app1
 
 
 workflows:
